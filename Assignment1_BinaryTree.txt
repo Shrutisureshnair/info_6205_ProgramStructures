@@ -1,0 +1,197 @@
+Q1 - Minimum Depth of Binary Tree
+
+class Solution {
+    public int minDepth(TreeNode root) {
+        // If the root node is null, return depth is 0.
+        if (root == null){
+            return 0;
+        }
+
+        // If the left node of the root is null, calculate the shortest distance from the right subtree.
+        if (root.left == null){
+            return minDepth(root.right) + 1;
+        }
+
+        // If the right node of the root is null, calculate the shortest distance from the left subtree.
+        if (root.right == null){
+            return minDepth(root.left) + 1;
+        }
+
+        // Recursively calculate the minimum depth of the left and right subtrees.
+        int left = minDepth(root.left);
+        int right = minDepth(root.right);
+
+        return Math.min(left, right) + 1; 
+    }
+}
+
+Q2 - Count Complete Tree Nodes
+
+lass Solution {
+    public int countNodes(TreeNode root) {
+      
+
+       int lh = leftHeight(root);
+       int rh = rightHeight(root);
+
+       if(lh == rh){
+           return (1 << lh) - 1;
+       }
+
+       else
+            return 1 + countNodes(root.left) + countNodes(root.right);
+    }
+
+        private int leftHeight(TreeNode root){
+            if (root == null){
+                return 0;
+            }
+            else
+            return 1 + leftHeight(root.left);
+        }
+
+        private int rightHeight(TreeNode root){
+            if (root == null){
+                return 0;
+            }
+            else
+            return 1 + rightHeight(root.right);
+        }
+        
+    
+}
+
+Q3 : Find the largest value in Each Tree Node
+
+class Solution {
+    public List<Integer> largestValues(TreeNode root) {
+        if (root==null)
+            return new ArrayList<>();
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        List<Integer> res = new ArrayList<>();
+
+        while (!queue.isEmpty()) {
+            int currentLevelSize = queue.size();
+            int maxInCurrentLevel =  Integer.MIN_VALUE;
+
+            for (int i=0; i < currentLevelSize; i++) {
+                TreeNode node = queue.poll();
+                maxInCurrentLevel = Math.max(maxInCurrentLevel, node.val);
+
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+            res.add(maxInCurrentLevel);
+        } 
+
+        return res;
+    }
+}
+Time complexity: O(N)
+
+Q4: Leaf-Similar Trees
+
+
+class Solution {
+    public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+        List<Integer> tree1 = new ArrayList<>();
+        List<Integer> tree2 = new ArrayList<>();
+        treeTraverse(root1, tree1);
+        treeTraverse(root2, tree2);
+        return tree1.equals(tree2);
+    }
+
+    public void treeTraverse(TreeNode root, List<Integer> leafList) {
+        if (root.left == null && root.right == null) {
+            leafList.add(root.val);
+        }
+        if (root.left != null) {
+            treeTraverse(root.left, leafList);
+        }
+        if (root.right != null) {
+            treeTraverse(root.right, leafList);
+        }
+    }
+}
+Time Complexity: O(m+n)
+
+Q5: Deepest Leaves Sum
+
+
+class Solution {
+    int sum = 0;
+
+    public int deepestLeavesSum(TreeNode root) {
+        int maxDepth = dfs(root); // find max depth of tree
+        System.out.println(maxDepth);
+        sumOfMaxDepthNode(root, 1, maxDepth); // root starts are level 1
+        return sum;
+    }
+
+    public void sumOfMaxDepthNode(TreeNode root, int level, int maxDepth) {
+        if (root == null) {
+           return;
+        }
+        // if we reach at maxDepth level then add it to sum
+        if (level == maxDepth) {
+           sum += root.val;
+       }
+
+        sumOfMaxDepthNode(root.left, level + 1, maxDepth);
+        sumOfMaxDepthNode(root.right, level + 1, maxDepth);
+    }
+
+    public int dfs(TreeNode root){
+        if (root == null) {
+            return 0;
+        }
+        int left = dfs(root.left);
+        int right = dfs(root.right);
+
+        return left > right ? left + 1 : right + 1 ;
+    }
+}
+Time complexity : O(n)
+
+Q6: Given the root of a binary tree, collect a tree's nodes as if you were doing this:
+
+Collect all the leaf nodes.
+Remove all the leaf nodes.
+Repeat until the tree is empty.
+
+
+
+
+class Solution {
+	// result[i] stores all nodes with a level of i
+    List<List<Integer>> result = new ArrayList<List<Integer>>();
+   
+    public int dfs(TreeNode u) {
+        if (u == null) {
+            return -1;
+        }
+        int leftLevel = dfs(u.left);
+        int rightLevel = dfs(u.right);
+        int currentLevel = Math.max(leftLevel, rightLevel)
+            + 1; // calculate level of current node
+		// create new sub list in result for storing leaf nodes in each level
+        while (result.size() <= currentLevel) { 
+            result.add(new ArrayList<Integer>());
+        }
+        result.get(currentLevel).add(u.val);
+        return currentLevel;
+    }
+	
+    public List<List<Integer>> findLeaves(TreeNode root) {
+        dfs(root);
+        return result;
+    }
+}
+
+Time complexity: O(N)
